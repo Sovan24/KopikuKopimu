@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kopiku Kopimu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    header {
+      background-color: #4e342e;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      padding: 2rem;
+    }
+    .product {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .product h3 {
+      margin: 0.5rem 0;
+    }
+    .price {
+      color: #795548;
+      font-weight: bold;
+    }
+    .buy-button {
+      background-color: #6d4c41;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .buy-button:hover {
+      background-color: #5d4037;
+    }
+    .cart {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #4e342e;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      max-width: 300px;
+    }
+    .checkout-button {
+      margin-top: 1rem;
+      background-color: #ff7043;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .checkout-button:hover {
+      background-color: #f4511e;
+    }
+    .checkout-form {
+      background-color: #fff3e0;
+      margin: 2rem;
+      padding: 1rem;
+      border-radius: 8px;
+      max-width: 400px;
+    }
+    .checkout-form input, .checkout-form textarea, .checkout-form select {
+      display: block;
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    .checkout-form button {
+      background-color: #4e342e;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Kopiku Kopimu</h1>
+    <p>Kopi bubuk pilihan dari biji terbaik Nusantara</p>
+  </header>
+
+  <main class="product-list">
+    <div class="product">
+      <h3>Arabika Original</h3>
+      <p class="price">Rp50.000</p>
+      <button class="buy-button" onclick="addToCart('Arabika Original', 50000)">Beli</button>
+    </div>
+    <div class="product">
+      <h3>Robusta Original</h3>
+      <p class="price">Rp45.000</p>
+      <button class="buy-button" onclick="addToCart('Robusta Original', 45000)">Beli</button>
+    </div>
+    <div class="product">
+      <h3>Campur Ararob</h3>
+      <p class="price">Rp48.000</p>
+      <button class="buy-button" onclick="addToCart('Campur Ararob', 48000)">Beli</button>
+    </div>
+  </main>
+
+  <section class="checkout-form">
+    <h2>Formulir Pemesanan</h2>
+    <label>Nama:</label>
+    <input type="text" id="customer-name" placeholder="Nama lengkap" />
+
+    <label>Alamat Pengiriman:</label>
+    <textarea id="customer-address" rows="3" placeholder="Alamat lengkap"></textarea>
+
+    <label>Metode Pembayaran:</label>
+    <select id="payment-method">
+      <option value="Transfer Bank">Transfer Bank</option>
+      <option value="E-Wallet">E-Wallet (OVO, GoPay, Dana)</option>
+      <option value="COD">COD (Cash on Delivery)</option>
+    </select>
+
+    <button onclick="submitOrder()">Kirim Pesanan</button>
+  </section>
+
+  <div class="cart" id="cart">
+    <strong>Keranjang:</strong>
+    <ul id="cart-items"></ul>
+    <p>Total: Rp<span id="cart-total">0</span></p>
+    <button class="checkout-button" onclick="checkout()">Checkout</button>
+  </div>
+
+  <script>
+    let cart = [];
+
+    function addToCart(productName, price) {
+      cart.push({ name: productName, price: price });
+      updateCart();
+    }
+
+    function updateCart() {
+      const cartItems = document.getElementById("cart-items");
+      const cartTotal = document.getElementById("cart-total");
+      cartItems.innerHTML = "";
+      let total = 0;
+
+      cart.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = `${item.name} - Rp${item.price.toLocaleString("id-ID")}`;
+        cartItems.appendChild(li);
+        total += item.price;
+      });
+
+      cartTotal.textContent = total.toLocaleString("id-ID");
+    }
+
+    function checkout() {
+      alert("Silakan isi formulir pemesanan di bawah untuk menyelesaikan pesanan.");
+    }
+
+    function submitOrder() {
+      const name = document.getElementById("customer-name").value.trim();
+      const address = document.getElementById("customer-address").value.trim();
+      const paymentMethod = document.getElementById("payment-method").value;
+
+      if (!name || !address) {
+        alert("Mohon lengkapi nama dan alamat terlebih dahulu.");
+        return;
+      }
+
+      if (cart.length === 0) {
+        alert("Keranjang masih kosong!");
+        return;
+      }
+
+      let message = `Halo, saya ingin memesan kopi:\n\nNama: ${name}\nAlamat: ${address}\nMetode Pembayaran: ${paymentMethod}\n\nPesanan:\n`;
+      let total = 0;
+      cart.forEach((item) => {
+        message += `- ${item.name}: Rp${item.price.toLocaleString("id-ID")}\n`;
+        total += item.price;
+      });
+      message += `\nTotal: Rp${total.toLocaleString("id-ID")}`;
+
+      // WhatsApp
+      const whatsappURL = `https://wa.me/6281234567890?text=${encodeURIComponent(message)}`;
+      window.open(whatsappURL, "_blank");
+
+      // Email
+      const subject = encodeURIComponent("Pesanan Kopi dari Kopiku Kopimu");
+      const emailBody = encodeURIComponent(message);
+      const emailURL = `mailto:svnaviv@gmail.com?subject=${subject}&body=${emailBody}`;
+      window.open(emailURL, "_blank");
+
+      // PDF (via print dialog)
+      const printWindow = window.open("", "", "width=600,height=600");
+      printWindow.document.write(`<pre>${message}</pre>`);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+
+      // Reset form dan keranjang
+      cart = [];
+      updateCart();
+      document.getElementById("customer-name").value = "";
+      document.getElementById("customer-address").value = "";
+    }
+  </script>
+</body>
+</html>
